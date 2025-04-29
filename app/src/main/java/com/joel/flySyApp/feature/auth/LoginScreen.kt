@@ -1,4 +1,4 @@
-package com.joel.homethermostat.feature.auth
+package com.joel.flySyApp.feature.auth
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

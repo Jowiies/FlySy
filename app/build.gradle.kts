@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.joel.homethermostat"
+    namespace = "com.joel.flySyApp"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.joel.homethermostat"
+        applicationId = "com.joel.flySyApp"
         minSdk = 33
         targetSdk = 35
         versionCode = 1

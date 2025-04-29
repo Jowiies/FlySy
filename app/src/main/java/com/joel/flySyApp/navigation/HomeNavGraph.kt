@@ -1,6 +1,5 @@
-package com.joel.homethermostat.navigation
+package com.joel.flySyApp.navigation
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
 import androidx.navigation.NavController
 import androidx.navigation.navigation
 

@@ -1,11 +1,10 @@
-package com.joel.homethermostat.navigation
+package com.joel.flySyApp.navigation
 
-import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.NavController
 import androidx.navigation.navigation
-import com.joel.homethermostat.feature.auth.LoginScreen
+import com.joel.flySyApp.feature.auth.LoginScreen
 
 fun NavGraphBuilder.authGraph(navController: NavController) {
     navigation(

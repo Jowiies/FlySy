@@ -1,4 +1,4 @@
-package com.joel.homethermostat
+package com.joel.flySyApp
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

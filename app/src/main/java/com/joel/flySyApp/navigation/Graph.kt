@@ -1,4 +1,4 @@
-package com.joel.homethermostat.navigation
+package com.joel.flySyApp.navigation
 
 sealed class Graph(val route: String) {
     data object Auth : Graph("auth_graph")

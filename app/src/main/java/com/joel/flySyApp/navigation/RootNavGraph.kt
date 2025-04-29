@@ -1,4 +1,4 @@
-package com.joel.homethermostat.navigation
+package com.joel.flySyApp.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier

@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "HomeThermostat"
+rootProject.name = "flySyApp"
 include(":app")

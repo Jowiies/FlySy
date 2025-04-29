@@ -1,4 +1,4 @@
-package com.joel.homethermostat
+package com.joel.flySyApp
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

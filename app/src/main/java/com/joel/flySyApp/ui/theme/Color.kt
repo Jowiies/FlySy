@@ -1,4 +1,4 @@
-package com.joel.homethermostat.ui.theme
+package com.joel.flySyApp.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

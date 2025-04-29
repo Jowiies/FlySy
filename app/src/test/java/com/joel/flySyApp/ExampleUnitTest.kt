@@ -1,4 +1,4 @@
-package com.joel.homethermostat
+package com.joel.flySyApp
 
 import org.junit.Test
 

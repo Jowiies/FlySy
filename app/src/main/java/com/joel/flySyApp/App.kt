@@ -1,4 +1,4 @@
-package com.joel.homethermostat
+package com.joel.flySyApp
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
@@ -7,8 +7,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
-import com.joel.homethermostat.navigation.RootNavGraph
-import com.joel.homethermostat.ui.theme.ThermostatTheme
+import com.joel.flySyApp.navigation.RootNavGraph
+import com.joel.flySyApp.ui.theme.ThermostatTheme
 
 @Composable
 fun App() {
