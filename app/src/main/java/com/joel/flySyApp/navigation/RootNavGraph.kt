@@ -12,7 +12,7 @@ fun RootNavGraph(navController: NavHostController, modifier: Modifier) {
         startDestination = Graph.Auth.route,
         modifier = modifier
     ) {
-        authGraph(navController)
+        authNavGraph(navController)
         homeGraph(navController)
     }
 }

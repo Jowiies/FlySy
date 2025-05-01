@@ -1,33 +1,34 @@
-package com.joel.flySyApp.feature.auth
+package com.joel.flySyApp.feature.auth.signin
 
-import android.widget.GridLayout
+import android.util.Patterns
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,31 +37,22 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.input.pointer.motionEventSpy
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.joel.flySyApp.R
 
 @Composable
-fun LoginScreen(navController: NavController) {
-    PreviewContent()
-}
-
-@Preview(
-    showSystemUi = true,
-    device = "id:pixel_7a",
-    showBackground = true,
-    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES or android.content.res.Configuration.UI_MODE_TYPE_UNDEFINED,
-    wallpaper = androidx.compose.ui.tooling.preview.Wallpapers.BLUE_DOMINATED_EXAMPLE
-)
-@Composable
-fun PreviewContent() {
+fun SignInScreen(
+    onLoginSuccess: () -> Unit,
+    onSignUpClick: () -> Unit,
+    onSignUpWithGoogle: () -> Unit,
+    onForgotPassword: () -> Unit,
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -79,14 +71,15 @@ fun PreviewContent() {
             var email by remember { mutableStateOf("") }
             var password by remember { mutableStateOf("") }
 
+            Spacer(Modifier.height(10.dp))
+
             StyledTextField(
                 value = email,
                 onValueChange = { email = it },
                 label = "Email",
                 placeholder = "example@domain.com",
                 keyboardType = KeyboardType.Email,
-                isError = email.isNotEmpty() && !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches(),
-                modifier = Modifier.padding(top = 10.dp)
+                isError = email.isNotEmpty() && !Patterns.EMAIL_ADDRESS.matcher(email).matches(),
             )
 
             Spacer(modifier = Modifier.height(5.dp))
@@ -100,15 +93,67 @@ fun PreviewContent() {
                 isPassword = true
             )
 
+            Spacer(Modifier.height(8.dp))
 
-            HorizontalDivider(
-                modifier = Modifier
-                    .fillMaxWidth(0.9f)
-                    .align(Alignment.CenterHorizontally)
-                    .padding(top = 20.dp),
-                color = MaterialTheme.colorScheme.outline
-            )
+            ForgotPasswordText(onForgotPassword)
+
+            Spacer(Modifier.height(16.dp))
+
+            SignInButton(onClick = onLoginSuccess)
+
+            Spacer(Modifier.height(32.dp))
+
+            HorizontalLoginDivider(Modifier.align(Alignment.CenterHorizontally))
+
+            Spacer(Modifier.height(32.dp))
+
+            SignGoogleButton(onSignUpWithGoogle)
+
+            CreateAccountText(onSignUpClick)
+
+            Spacer(Modifier.height(10.dp))
         }
+    }
+}
+
+@Composable
+fun CreateAccountText(onClick: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize(),
+        contentAlignment = Alignment.BottomCenter
+    ){
+        TextButton(
+            onClick = onClick
+        ) {
+            Text("Create account")
+        }
+    }
+}
+
+@Composable
+fun HorizontalLoginDivider(modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 10.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        HorizontalDivider(
+            modifier = Modifier.weight(1f),
+            color = MaterialTheme.colorScheme.outline
+        )
+
+        Text(
+            text = "OR",
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.padding(horizontal = 12.dp)
+        )
+
+        HorizontalDivider(
+            modifier = Modifier.weight(1f),
+            color = MaterialTheme.colorScheme.outline
+        )
     }
 }
 
@@ -130,8 +175,13 @@ fun TitleIcon() {
     Box(
         modifier = Modifier
             .size(56.dp)
-            .clip(CircleShape)
-            .background(color = MaterialTheme.colorScheme.surfaceTint),
+            .clip(shape = RoundedCornerShape(30.dp))
+            .border(
+                shape = RoundedCornerShape(30.dp),
+                width = 2.dp,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            .background(color = Color.White),
         contentAlignment = Alignment.Center,
     ){
         Image(
@@ -153,7 +203,6 @@ fun StyledTextField(
     keyboardType: KeyboardType = KeyboardType.Text,
     isPassword: Boolean = false,
     isError: Boolean = false,
-    modifier: Modifier = Modifier
 ) {
     var passwordVisibility by remember { mutableStateOf(false) }
 
@@ -166,39 +215,88 @@ fun StyledTextField(
         textStyle = MaterialTheme.typography.bodyLarge,
         singleLine = true,
         isError = isError,
-        visualTransformation = if (isPassword && !passwordVisibility) PasswordVisualTransformation() else VisualTransformation.None,
+        visualTransformation =
+            if (isPassword && !passwordVisibility)
+                PasswordVisualTransformation()
+            else VisualTransformation.None,
         trailingIcon = {
             if (isPassword) {
                 val image = if (passwordVisibility)
                     Icons.Default.Visibility
                 else Icons.Default.VisibilityOff
 
-                IconButton(onClick = { passwordVisibility = !passwordVisibility }) {
-                    Icon(imageVector = image, contentDescription = if (passwordVisibility) "Hide password" else "Show password")
+                IconButton(
+                    onClick = { passwordVisibility = !passwordVisibility }
+                ) {
+                    Icon(
+                        imageVector = image,
+                        contentDescription =
+                            if (passwordVisibility)
+                                "Hide password"
+                            else "Show password")
                 }
             }
         },
         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = keyboardType),
-        modifier = modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth()
     )
 }
 
 @Composable
-fun LoginButtonRow() {
+fun ForgotPasswordText(onClick: () -> Unit ){
     Row(
-        
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.Top
+
     ){
-        Button(
-            onClick = {},
-            modifier = Modifier
-                .padding(top = 10.dp)
+        TextButton(
+            onClick = onClick
         ) {
-            Text(
-                text = "Login",
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier
-                    .align(Alignment.CenterVertically)
-            )
+            Text("Forgot password")
         }
     }
 }
+
+@Composable
+fun SignInButton(onClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.End,
+        verticalAlignment = Alignment.Top
+    ){
+
+        Button(
+            onClick = onClick,
+        ) {
+            Text("Sign in")
+        }
+    }
+}
+
+@Composable
+fun SignGoogleButton(onClick: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth(),
+        contentAlignment = Alignment.TopCenter
+    )
+    {
+        Image(
+            painter = painterResource(
+                if (isSystemInDarkTheme()) R.drawable.ic_google_si_btn_dark
+                else R.drawable.ic_google_si_btn_light
+            ),
+            contentDescription = "Sign in with Google",
+            modifier = Modifier
+                .height(56.dp)
+                .clip(RoundedCornerShape(30.dp))
+                .clickable { onClick },
+            contentScale = ContentScale.FillHeight
+        )
+
+    }
+}
+

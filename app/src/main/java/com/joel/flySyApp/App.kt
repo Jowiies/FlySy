@@ -8,11 +8,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.joel.flySyApp.navigation.RootNavGraph
-import com.joel.flySyApp.ui.theme.ThermostatTheme
+import com.joel.flySyApp.ui.theme.FlySyAppTheme
 
 @Composable
 fun App() {
-    ThermostatTheme {
+    FlySyAppTheme {
        val navController = rememberNavController()
         Scaffold (
             topBar = {},
