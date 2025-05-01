@@ -292,8 +292,8 @@ fun SignGoogleButton(onClick: () -> Unit) {
             contentDescription = "Sign in with Google",
             modifier = Modifier
                 .height(56.dp)
-                .clip(RoundedCornerShape(30.dp))
-                .clickable { onClick },
+                .clip(MaterialTheme.shapes.extraLarge)
+                .clickable { onClick() },
             contentScale = ContentScale.FillHeight
         )
 
