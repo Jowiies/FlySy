@@ -9,10 +9,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(userId: String, onLogOut: () -> Unit) {
 
     Box(
         modifier = Modifier
@@ -24,7 +23,7 @@ fun HomeScreen() {
             onClick = onLogOut
         ) {
             Text(
-                text = "LogOut"
+                text = "Log Out $userId"
             )
         }
     }

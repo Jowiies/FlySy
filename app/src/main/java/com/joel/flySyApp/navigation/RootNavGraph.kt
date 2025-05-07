@@ -1,12 +1,15 @@
 package com.joel.flySyApp.navigation
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import com.joel.flySyApp.feature.auth.signin.SignInScreen
+import com.joel.flySyApp.feature.home.HomeScreen
 import kotlinx.serialization.Serializable
 
 // AUTH SCREENS
@@ -17,8 +20,7 @@ import kotlinx.serialization.Serializable
 @Serializable object VerifySignUp
 
 // MAIN SCREENS
-@Serializable data class Profile(val name: String)
-@Serializable object Home
+@Serializable data class Home(val userId: String)
 
 @Composable
 fun RootNavGraph(navController: NavHostController, paddingValues: PaddingValues) {
@@ -29,15 +31,25 @@ fun RootNavGraph(navController: NavHostController, paddingValues: PaddingValues)
         
         composable<SignIn> {
             SignInScreen(
-                onLoginSuccess = TODO(),
-                onSignUpClick = TODO(),
-                onSignUpWithGoogle = TODO(),
-                onForgotPassword = TODO()
+                modifier = Modifier.padding(paddingValues),
+                onLoginSuccess = { id -> navController.navigate( Home(id) ) },
+                onSignUpClick = {},
+                onSignUpWithGoogle = {},
+                onForgotPassword = {}
             )
         }
 
-        composable<Home> {
-            
+        composable<Home> { backStackEntry ->
+            val home: Home = backStackEntry.toRoute()
+            HomeScreen(
+                userId = home.userId,
+                onLogOut = {
+                    navController.popBackStack(
+                        route = SignIn,
+                        inclusive = false
+                    )}
+
+            )
         }
 
     }

@@ -48,15 +48,15 @@ import com.joel.flySyApp.R
 
 @Composable
 fun SignInScreen(
-    onLoginSuccess: () -> Unit,
     onSignUpClick: () -> Unit,
     onSignUpWithGoogle: () -> Unit,
     onForgotPassword: () -> Unit,
+    onLoginSuccess: (String) -> Unit,
+    modifier: Modifier,
 ) {
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 20.dp),
+        modifier = modifier
+            .fillMaxSize(),
         contentAlignment = Alignment.TopCenter,
     ) {
         Column (
@@ -99,7 +99,7 @@ fun SignInScreen(
 
             Spacer(Modifier.height(16.dp))
 
-            SignInButton(onClick = onLoginSuccess)
+            SignInButton(onClick = {onLoginSuccess(email)})
 
             Spacer(Modifier.height(32.dp))
 
