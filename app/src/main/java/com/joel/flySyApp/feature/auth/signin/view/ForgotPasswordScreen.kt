@@ -1,4 +1,4 @@
-package com.joel.flySyApp.feature.auth.signin
+package com.joel.flySyApp.feature.auth.signin.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

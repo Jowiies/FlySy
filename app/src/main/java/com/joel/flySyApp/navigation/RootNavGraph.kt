@@ -8,7 +8,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import com.joel.flySyApp.feature.auth.signin.SignInScreen
+import com.joel.flySyApp.feature.auth.signin.view.SignInScreen
 import com.joel.flySyApp.feature.home.HomeScreen
 import kotlinx.serialization.Serializable
 
@@ -32,10 +32,10 @@ fun RootNavGraph(navController: NavHostController, paddingValues: PaddingValues)
         composable<SignIn> {
             SignInScreen(
                 modifier = Modifier.padding(paddingValues),
-                onLoginSuccess = { id -> navController.navigate( Home(id) ) },
+                onSignInSuccess = { token -> navController.navigate(Home(token)) },
                 onSignUpClick = {},
                 onSignUpWithGoogle = {},
-                onForgotPassword = {}
+                onForgotPassword = {},
             )
         }
 

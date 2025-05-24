@@ -1,6 +1,8 @@
-package com.joel.flySyApp.feature.auth.signin
+package com.joel.flySyApp.feature.auth.signin.view
 
+import android.util.Log
 import android.util.Patterns
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -22,6 +24,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -31,87 +34,118 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.joel.flySyApp.R
+import com.joel.flySyApp.feature.auth.signin.viewmodel.SignInViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun SignInScreen(
     onSignUpClick: () -> Unit,
     onSignUpWithGoogle: () -> Unit,
     onForgotPassword: () -> Unit,
-    onLoginSuccess: (String) -> Unit,
+    onSignInSuccess: (String) -> Unit,
     modifier: Modifier,
 ) {
+    val viewModel: SignInViewModel = viewModel()
+    val email: String by viewModel.email.observeAsState(initial = "")
+    val password: String by viewModel.password.observeAsState(initial = "")
+    val signInEnabled: Boolean by viewModel.signInEnabled.observeAsState(initial = false)
+    val isLoading: Boolean by viewModel.isLoading.observeAsState(initial = false)
+    val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
+
+
     Box(
         modifier = modifier
             .fillMaxSize(),
         contentAlignment = Alignment.TopCenter,
     ) {
-        Column (
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .padding(20.dp),
-        ){
-            TitleIcon()
+        if (isLoading) {
+            CircularProgressIndicator(Modifier.align(Alignment.Center))
+        }
+        else {
+            Column (
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(20.dp),
+            ){
+                TitleIcon()
 
-            SignInText()
+                SignInText()
 
-            var email by remember { mutableStateOf("") }
-            var password by remember { mutableStateOf("") }
+                Spacer(Modifier.height(10.dp))
 
-            Spacer(Modifier.height(10.dp))
+                StyledTextField(
+                    value = email,
+                    onValueChange = { viewModel.onEmailChange(it) },
+                    label = "Email",
+                    placeholder = "example@domain.com",
+                    keyboardType = KeyboardType.Email,
+                    isError = email.isNotEmpty() && !Patterns.EMAIL_ADDRESS.matcher(email).matches(),
+                )
 
-            StyledTextField(
-                value = email,
-                onValueChange = { email = it },
-                label = "Email",
-                placeholder = "example@domain.com",
-                keyboardType = KeyboardType.Email,
-                isError = email.isNotEmpty() && !Patterns.EMAIL_ADDRESS.matcher(email).matches(),
-            )
+                Spacer(modifier = Modifier.height(5.dp))
 
-            Spacer(modifier = Modifier.height(5.dp))
+                StyledTextField(
+                    value = password,
+                    onValueChange = { viewModel.onPasswordChange(it) },
+                    label = "Password",
+                    placeholder = "Enter your password",
+                    keyboardType = KeyboardType.Password,
+                    isPassword = true
+                )
 
-            StyledTextField(
-                value = password,
-                onValueChange = { password = it },
-                label = "Password",
-                placeholder = "Enter your password",
-                keyboardType = KeyboardType.Password,
-                isPassword = true
-            )
+                Spacer(Modifier.height(8.dp))
 
-            Spacer(Modifier.height(8.dp))
+                ForgotPasswordText(onForgotPassword)
 
-            ForgotPasswordText(onForgotPassword)
+                Spacer(Modifier.height(16.dp))
 
-            Spacer(Modifier.height(16.dp))
+                SignInButton(signInEnabled){
+                    coroutineScope.launch {
+                        viewModel.onSignInSelected(
+                            onSuccess = { token ->
+                                onSignInSuccess(token.access_token)
+                            },
+                            onError = { error ->
+                                Toast.makeText(context, "Error logging in", Toast.LENGTH_SHORT).show()
+                                Log.e("SignInError", "Error during sign in", error)
 
-            SignInButton(onClick = {onLoginSuccess(email)})
+                            }
+                        )
+                    }
+                }
 
-            Spacer(Modifier.height(32.dp))
+                Spacer(Modifier.height(32.dp))
 
-            HorizontalLoginDivider(Modifier.align(Alignment.CenterHorizontally))
+                HorizontalLoginDivider(Modifier.align(Alignment.CenterHorizontally))
 
-            Spacer(Modifier.height(32.dp))
+                Spacer(Modifier.height(32.dp))
 
-            SignGoogleButton(onSignUpWithGoogle)
+                SignGoogleButton(onSignUpWithGoogle)
 
-            CreateAccountText(onSignUpClick)
+                CreateAccountText(onSignUpClick)
 
-            Spacer(Modifier.height(10.dp))
+                Spacer(Modifier.height(10.dp))
+            }
+
         }
     }
 }
@@ -208,7 +242,7 @@ fun StyledTextField(
 
     OutlinedTextField(
         value = value,
-        onValueChange = onValueChange,
+        onValueChange = { onValueChange(it) },
         label = { Text(label) },
         placeholder = { Text(placeholder) },
         shape = MaterialTheme.shapes.medium,
@@ -260,7 +294,10 @@ fun ForgotPasswordText(onClick: () -> Unit ){
 }
 
 @Composable
-fun SignInButton(onClick: () -> Unit) {
+fun SignInButton(
+    signInEnabled: Boolean,
+    onSignInSelected: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth(),
@@ -269,10 +306,9 @@ fun SignInButton(onClick: () -> Unit) {
     ){
 
         Button(
-            onClick = onClick,
-        ) {
-            Text("Sign in")
-        }
+            onClick = onSignInSelected,
+            enabled = signInEnabled
+        ) {Text("Sign in") }
     }
 }
 

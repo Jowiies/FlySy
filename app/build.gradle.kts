@@ -54,6 +54,8 @@ dependencies {
     implementation(libs.coil.svg)
     implementation(libs.coil.compose)
 
+    implementation(libs.androidx.runtime.livedata)
+
     val nav_version = "2.8.9"
 
     // Jetpack Compose integration
@@ -72,6 +74,9 @@ dependencies {
     // JSON serialization library, works with the Kotlin serialization plugin
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
 
+    implementation (libs.retrofit)
+    implementation (libs.converter.gson)
+    implementation (libs.kotlinx.coroutines.android)
 
 
     testImplementation(libs.junit)
